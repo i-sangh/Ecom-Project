@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,7 +15,6 @@ export default function SignUpPage() {
     password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [serverError, setServerError] = useState("");
   const router = useRouter();
 
   const validateForm = () => {
@@ -45,36 +44,13 @@ export default function SignUpPage() {
     return isValid;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    setIsLoading(true);
-    setServerError("");
-
-    try {
-      const response = await fetch("/api/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to register");
-      }
-
-      const emailParam = encodeURIComponent(formData.email);
-      router.push(`/verify?email=${emailParam}`);
-    } catch (error) {
-      console.error("Signup error:", error);
-      setServerError(error instanceof Error ? error.message : "Failed to register");
-    } finally {
-      setIsLoading(false);
-    }
+    // Directly redirect to the verify page without creating a user
+    const emailParam = encodeURIComponent(formData.email);
+    router.push(`/verify?email=${emailParam}`);
   };
 
   return (
@@ -118,12 +94,6 @@ export default function SignUpPage() {
             />
             {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
           </div>
-
-          {serverError && (
-            <div className="mb-4 p-3 bg-red-100 text-red-600 rounded">
-              {serverError}
-            </div>
-          )}
 
           <button
             type="submit"
