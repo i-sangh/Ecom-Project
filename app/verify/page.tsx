@@ -7,7 +7,15 @@ export default function VerifyEmail() {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
   const router = useRouter()
   const searchParams = useSearchParams()
-  const email = searchParams.get('email') || 'dev***@revispy.com'
+  const email = searchParams?.get('email') || 'dev***@revispy.com'
+
+  // Check if email is valid
+  useEffect(() => {
+    if (!searchParams || !searchParams.get('email')) {
+      console.error('Email parameter is missing in the URL');
+      // Optionally redirect or show an error message
+    }
+  }, [searchParams])
 
   // Initialize input refs
   useEffect(() => {
@@ -60,7 +68,7 @@ export default function VerifyEmail() {
       router.push('/login')
     } catch (error) {
       console.error('Verification failed:', error)
-      // Handle error appropriately
+      // Handle error appropriately, e.g., show a message to the user
     }
   }
 
