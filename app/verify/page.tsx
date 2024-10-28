@@ -1,8 +1,8 @@
 "use client"
-import { useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-export default function VerifyEmail() {
+function VerifyEmailComponent() {
   const [verificationCode, setVerificationCode] = useState<string[]>(Array(8).fill(''))
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
   const router = useRouter()
@@ -12,7 +12,7 @@ export default function VerifyEmail() {
   // Check if email is valid
   useEffect(() => {
     if (!searchParams || !searchParams.get('email')) {
-      console.error('Email parameter is missing in the URL');
+      console.error('Email parameter is missing in the URL')
       // Optionally redirect or show an error message
     }
   }, [searchParams])
@@ -90,7 +90,7 @@ export default function VerifyEmail() {
                 <input
                   key={index}
                   type="text"
-                  ref={el => { inputRefs.current[index] = el; }} // Updated ref assignment
+                  ref={el => { inputRefs.current[index] = el }}
                   className="h-12 w-12 rounded border border-gray-300 text-center text-lg"
                   value={digit}
                   onChange={e => handleInput(index, e.target.value)}
@@ -113,5 +113,13 @@ export default function VerifyEmail() {
         </form>
       </div>
     </div>
+  )
+}
+
+export default function VerifyEmail() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyEmailComponent />
+    </Suspense>
   )
 }
